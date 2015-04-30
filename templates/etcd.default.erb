@@ -8,34 +8,34 @@ NAME="<%= @node_name -%>"
 DATA_DIR="<%= @data_dir -%>"
 
 # Enable proxy mode
-PROXY="<%= FIXME -%>"
+PROXY="<%= @proxy -%>"
 
 # number of committed transactions to trigger a snapshot to disk.
 SNAPSHOT_COUNT="<%= @snapshot_count %>"
 
 # list of URLs to listen on for peer traffic.
-LISTEN_PEER_URLS="<%= FIXME -%>"
+LISTEN_PEER_URLS="<%= @listen_peer_urls.join(',') -%>"
 
 # list of URLs to listen on for client traffic.
-LISTEN_CLIENT_URLS="<%= FIXME -%>"
+LISTEN_CLIENT_URLS="<%= @listen_client_urls.join(',') -%>"
 
 # comma-separated whitelist of origins for CORS (cross-origin resource sharing).
 CORS="<%= @cors.join(',') -%>"
 
 # list of this member's peer URLs to advertise to the rest of the cluster.
-INITIAL_ADVERTISE_PEER_URLS="<%= FIXME -%>"
+INITIAL_ADVERTISE_PEER_URLS="<%= @initial_advertise_peer_urls.join(',') -%>"
 
 # initial cluster configuration for bootstrapping.
-INITIAL_CLUSTER="<%= FIXME -%>"
+INITIAL_CLUSTER="<%= @initial_cluster.join(',') -%>"
 
 # initial cluster state ('new' or 'existing').
-INITIAL_CLUSTER_STATE="<%= FIXME -%>"
+INITIAL_CLUSTER_STATE="<%= @initial_cluster_state -%>"
 
 # initial cluster token for the etcd cluster during bootstrap.
-INITIAL_CLUSTER_TOKEN="<%= FIXME -%>"
+INITIAL_CLUSTER_TOKEN="<%= @initial_cluster_token -%>"
 
 # list of this member's client URLs to advertise to the rest of the cluster.
-ADVERTISE_CLIENT_URLS="<%= FIXME -%>"
+ADVERTISE_CLIENT_URLS="<%= @advertise_client_urls.join(',') -%>"
 
 # discovery URL used to bootstrap the cluster.
 DISCOVERY="<%= @discovery -%>"
@@ -44,10 +44,10 @@ DISCOVERY="<%= @discovery -%>"
 DISCOVERY_FALLBACK="<%= @discovery_fallback -%>"
 
 # HTTP proxy to use for traffic to discovery service.
-DISCOVERY_PROXY="<%= FIXME -%>"
+DISCOVERY_PROXY="<%= @discovery_proxy -%>"
 
 # DNS domain name to use for discovery
-DISCOVERY_SRV="<%= FIXME -%>"
+DISCOVERY_SRV="<%= @discovery_srv -%>"
 
 # Certificate Authority
 CA_FILE="<%= @ca_file -%>"

@@ -39,6 +39,15 @@ class etcd::params {
   # Log Dir
   $etcd_log_dir                 = '/var/log/etcd'
 
+  $etcd_initial_advertise_peer_urls = ['http://localhost:2380', 'http://localhost:7001']
+  $etcd_initial_cluster             = ['default=http://localhost:2380', 'default=http://localhost:7001']
+  $etcd_initial_cluster_state       = 'new'
+  $etcd_initial_cluster_token       = 'etcd-cluster'
+  $etcd_advertise_client_urls       = ['http://localhost:2379', 'http://localhost:4001']
+  $etcd_listen_peer_urls            = ['http://localhost:2380', 'http://localhost:7001']
+  $etcd_listen_client_urls          = ['http://localhost:2379', 'http://localhost:4001']
+  $etcd_proxy = 'off'
+
   # Node settings
   $etcd_node_name               = $::fqdn
   $etcd_addr                    = "${::fqdn}:4001"
@@ -53,6 +62,9 @@ class etcd::params {
   $etcd_discovery               = false
   $etcd_discovery_endpoint      = 'https://discovery.etcd.io/'
   $etcd_discovery_token         = ''
+  $etcd_discovery_fallback      = 'proxy'
+  $etcd_discovery_srv           = ''
+  $etcd_discovery_proxy         = ''
 
   # Peer settings
   $etcd_peer_addr               = "${::fqdn}:7001"
