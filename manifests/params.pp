@@ -3,15 +3,26 @@
 class etcd::params {
   # Handle OS Specific config values
   case $::osfamily {
-    'Redhat' : { $etcd_binary_location = '/usr/sbin/etcd' }
-    'Debian' : { $etcd_binary_location = '/usr/bin/etcd' }
+    'Redhat' : {
+      $etcd_binary_location     = '/usr/sbin/etcd'
+      $etcd_manage_service_file = true
+      $etcd_manage_user         = true
+      $etcd_manage_data_dir     = true
+      $etcd_manage_log_dir      = true
+    }
+    'Debian' : {
+      $etcd_binary_location     = '/usr/bin/etcd'
+      $etcd_manage_service_file = false
+      $etcd_manage_user         = false
+      $etcd_manage_data_dir     = false
+      $etcd_manage_log_dir      = false
+    }
     default  : { fail("Unsupported osfamily ${::osfamily}") }
   }
 
   # Service settings
   $etcd_service_ensure          = 'running'
   $etcd_service_enable          = true
-  $etcd_manage_service_file     = true
 
   # Package settings
   $etcd_package_ensure          = 'installed'
@@ -22,12 +33,10 @@ class etcd::params {
   $etcd_user                    = 'etcd'
   $etcd_group                   = 'etcd'
 
-  # Manage Data Dir?
-  $etcd_manage_data_dir         = true
+  # Data Dir
   $etcd_data_dir                = '/var/lib/etcd'
 
-  # Manage Log Dir?
-  $etcd_manage_log_dir          = true
+  # Log Dir
   $etcd_log_dir                 = '/var/log/etcd'
 
   # Node settings
