@@ -1,0 +1,59 @@
+# For an explanation of the various ways to do cluster setup, see:
+# /usr/share/doc/etcd/Documentation/clustering.md.gz
+
+# human-readable name for this member.
+NAME="<%= @node_name -%>"
+
+# path to the data directory.
+DATA_DIR="<%= @data_dir -%>"
+
+# Enable proxy mode
+PROXY="<%= FIXME -%>"
+
+# number of committed transactions to trigger a snapshot to disk.
+SNAPSHOT_COUNT="<%= @snapshot_count %>"
+
+# list of URLs to listen on for peer traffic.
+LISTEN_PEER_URLS="<%= FIXME -%>"
+
+# list of URLs to listen on for client traffic.
+LISTEN_CLIENT_URLS="<%= FIXME -%>"
+
+# comma-separated whitelist of origins for CORS (cross-origin resource sharing).
+CORS="<%= @cors.join(',') -%>"
+
+# list of this member's peer URLs to advertise to the rest of the cluster.
+INITIAL_ADVERTISE_PEER_URLS="<%= FIXME -%>"
+
+# initial cluster configuration for bootstrapping.
+INITIAL_CLUSTER="<%= FIXME -%>"
+
+# initial cluster state ('new' or 'existing').
+INITIAL_CLUSTER_STATE="<%= FIXME -%>"
+
+# initial cluster token for the etcd cluster during bootstrap.
+INITIAL_CLUSTER_TOKEN="<%= FIXME -%>"
+
+# list of this member's client URLs to advertise to the rest of the cluster.
+ADVERTISE_CLIENT_URLS="<%= FIXME -%>"
+
+# discovery URL used to bootstrap the cluster.
+DISCOVERY="<%= @discovery -%>"
+
+# expected behavior ('exit' or 'proxy') when discovery services fails.
+DISCOVERY_FALLBACK="<%= @discovery_fallback -%>"
+
+# HTTP proxy to use for traffic to discovery service.
+DISCOVERY_PROXY="<%= FIXME -%>"
+
+# DNS domain name to use for discovery
+DISCOVERY_SRV="<%= FIXME -%>"
+
+# Certificate Authority
+CA_FILE="<%= @ca_file -%>"
+
+# Certificate file
+CERT_FILE="<%= @cert_file -%>"
+
+# Key file
+KEY_FILE="<%= @key_file -%>"

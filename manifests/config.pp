@@ -12,20 +12,13 @@ class etcd::config {
       }
     }
     'Debian' : {
-      file { '/etc/etcd':
-        ensure => directory,
-        owner  => $etcd::user,
-        group  => $etcd::group,
-        mode   => '0555'
-      }
-
-      file { '/etc/etcd/etcd.conf':
+      # Use file defaults from Debian package
+      file { '/etc/default/etcd':
         ensure  => file,
-        owner   => $etcd::user,
-        group   => $etcd::group,
+        owner   => 'root',
+        group   => 'root',
         mode    => '0644',
-        content => template('etcd/etcd.conf.erb'),
-        require => File['/etc/etcd']
+        content => template('etcd/etcd.default.erb')
       }
     }
     default  : {
