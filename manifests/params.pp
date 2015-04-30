@@ -29,7 +29,6 @@ class etcd::params {
   $etcd_package_name            = 'etcd'
 
   # User settings
-  $etcd_manage_user             = true
   $etcd_user                    = 'etcd'
   $etcd_group                   = 'etcd'
 
