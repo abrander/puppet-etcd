@@ -91,10 +91,10 @@ fi
 #	Function that starts the daemon/service.
 #
 d_start() {
-	start-stop-daemon --no-close -c etcd -b -S --exec <%= @binary_location %> -- \
+	start-stop-daemon --no-close -c etcd -b -S --exec /usr/bin/etcd --exec <%= @binary_location %> --startas /bin/bash -- -c "exec <%= @binary_location %> \
 		--name=$NAME \
 		--data-dir=$DATA_DIR \
-		$ARGS 2>&1 | logger -t etcd
+		$ARGS 2>&1 | logger -t etcd"
 }
 
 #
