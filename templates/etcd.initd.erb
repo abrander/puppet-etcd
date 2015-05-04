@@ -94,7 +94,7 @@ d_start() {
 	start-stop-daemon --no-close -c etcd -b -S --exec <%= @binary_location %> -- \
 		--name=$NAME \
 		--data-dir=$DATA_DIR \
-		$ARGS | logger -t etcd
+		$ARGS 2>&1 | logger -t etcd
 }
 
 #
