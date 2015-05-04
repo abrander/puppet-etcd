@@ -37,6 +37,7 @@ INITIAL_CLUSTER_TOKEN="<%= @initial_cluster_token -%>"
 # list of this member's client URLs to advertise to the rest of the cluster.
 ADVERTISE_CLIENT_URLS="<%= @advertise_client_urls.join(',') -%>"
 
+<% if @discovery and !@discovery.empty? -%>
 # discovery URL used to bootstrap the cluster.
 DISCOVERY="<%= @discovery -%>"
 
@@ -48,7 +49,7 @@ DISCOVERY_PROXY="<%= @discovery_proxy -%>"
 
 # DNS domain name to use for discovery
 DISCOVERY_SRV="<%= @discovery_srv -%>"
-
+<% end -%>
 # Certificate Authority
 CA_FILE="<%= @ca_file -%>"
 
