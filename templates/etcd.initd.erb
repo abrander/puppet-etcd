@@ -1,80 +1,132 @@
-#!/bin/bash
-# Copyright 2013, Nathan Milford
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          etcd
+# Required-Start:    $local_fs $remote_fs $network
+# Required-Stop:     $local_fs $remote_fs $network
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+### END INIT INFO
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# Init script for etcd Debian package. Based on skeleton init script:
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+# Version:	@(#)skeleton  2.85-23  28-Jul-2004  miquels@cistron.nl
 #
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-# /etc/init.d/etcd
-#
-# Startup script for etcd
-#
-# chkconfig: 2345 20 80
-# description: Starts and stops etcd
 
-. /etc/init.d/functions
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+DESC="Highly-available key value store"
+SCRIPTNAME=/etc/init.d/etcd
 
-prog="etcd"
-prog_bin="<%= @binary_location -%>"
-desc="etcd shared configuration and service discovery daemon"
 
-if ! [ -f $prog_bin ]; then
-  echo "$prog binary not found."
-  exit 5
+test -f /lib/lsb/init-functions || exit 1
+. /lib/lsb/init-functions
+
+# Check if configuration file is present
+test -f /etc/default/etcd && . /etc/default/etcd
+
+
+ARGS=
+
+if [ -n "$INITIAL_CLUSTER" ]; then
+	ARGS="$ARGS --initial-cluster=$INITIAL_CLUSTER"
 fi
 
-if [ -f /etc/sysconfig/$prog ]; then
-  . /etc/sysconfig/$prog
-else
-  echo "No sysconfig file found in /etc/sysconfig/$prog... exiting."
-  exit 5
+if [ -n "$INITIAL_CLUSTER_STATE" ]; then
+	ARGS="$ARGS \
+		--initial-cluster-state=$INITIAL_CLUSTER_STATE \
+		--initial-cluster-token=$INITIAL_CLUSTER_TOKEN"
 fi
 
-start() {
-  echo "Starting $desc ($prog): "
-  su $ETCD_USER -c "nohup $prog_bin $ETCD_OPTS >>$ETCD_OUT_FILE 2>&1 &"
-  RETVAL=$?
-  return $RETVAL
+if [ -n "$INITIAL_ADVERTISE_PEER_URLS" ]; then
+	ARGS="$ARGS --initial-advertise-peer-urls=$INITIAL_ADVERTISE_PEER_URLS"
+fi
+
+if [ -n "$DISCOVERY" ]; then
+	ARGS="$ARGS \
+		--discovery=$DISCOVERY \
+		--discovery-fallback=$DISCOVERY_FALLBACK \
+		--discovery-proxy=$DISCOVERY_PROXY"
+fi
+
+if [ -n "$DISCOVERY_SRV" ]; then
+	ARGS="$ARGS --discovery-srv=$DISCOVERY_SRV"
+fi
+
+if [ -n "$SNAPSHOT_COUNT" ]; then
+	ARGS="$ARGS --snapshot-count=$SNAPSHOT_COUNT"
+fi
+
+if [ -n "$ADVERTISE_CLIENT_URLS" ]; then
+	ARGS="$ARGS --advertise-client-urls=$ADVERTISE_CLIENT_URLS"
+fi
+
+if [ -n "$LISTEN_PEER_URLS" ]; then
+	ARGS="$ARGS --listen-peer-urls=$LISTEN_PEER_URLS"
+fi
+
+if [ -n "$LISTEN_CLIENT_URLS" ]; then
+	ARGS="$ARGS --listen-client-urls=$LISTEN_CLIENT_URLS"
+fi
+
+if [ -n "$CA_FILE" ]; then
+	ARGS="$ARGS --ca-file=$CA_FILE --peer-ca-file=$CA_FILE"
+fi
+
+if [ -n "$CERT_FILE" ]; then
+	ARGS="$ARGS --cert-file=$CERT_FILE --peer-cert-file=$CERT_FILE"
+fi
+
+if [ -n "$KEY_FILE" ]; then
+	ARGS="$ARGS --key-file=$KEY_FILE --peer-key-file=$KEY_FILE"
+fi
+
+if [ -n "$CORS" ]; then
+	ARGS="$ARGS --cors=$CORS"
+fi
+
+if [ -n "$PROXY" ]; then
+	ARGS="$ARGS --proxy=$PROXY"
+fi
+
+#
+#	Function that starts the daemon/service.
+#
+d_start() {
+	start-stop-daemon -c etcd -b -S --exec /usr/bin/etcd -- \
+		--name=$NAME \
+		--data-dir=$DATA_DIR \
+		$ARGS
 }
 
-stop() {
-  echo "Shutting down $desc ($prog): "
-  pkill -f $prog_bin
+#
+#	Function that stops the daemon/service.
+#
+d_stop() {
+	start-stop-daemon --exec /usr/bin/etcd -K
 }
 
-restart() {
-    stop
-    start
-}
-
-status() {
-  if [ -z $pid ]; then
-     pid=$(pgrep -f $prog_bin)
-  fi
-
-  if [ -z $pid ]; then
-    echo "$prog is NOT running."
-    return 1
-  else
-    echo "$prog is running (pid is $pid)."
-  fi
-
-}
 
 case "$1" in
-  start)   start;;
-  stop)    stop;;
-  restart) restart;;
-  status)  status;;
-  *)       echo "Usage: $0 {start|stop|restart|status}"
-           RETVAL=2;;
+  start)
+	echo -n "Starting $DESC: etcd"
+	d_start
+	echo "."
+	;;
+  stop)
+	echo -n "Stopping $DESC: etcd"
+	d_stop
+	echo "."
+	;;
+  restart|force-reload)
+	echo -n "Restarting $DESC: etcd"
+	d_stop
+	sleep 1
+	d_start
+	echo "."
+	;;
+  *)
+	echo "Usage: $SCRIPTNAME {start|stop|restart|force-reload}" >&2
+	exit 1
+	;;
 esac
-exit $RETVAL
+
+exit 0
